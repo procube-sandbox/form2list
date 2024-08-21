@@ -4,9 +4,7 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash",
-                "python.terminal.activateEnvInCurrentTerminal": true,
-                "python.defaultInterpreterPath": ".venv/bin/python"
+                "terminal.integrated.shell.linux": "/bin/bash"
             },
             "extensions": [
                 "ms-python.python",
@@ -15,8 +13,8 @@
                 "ms-python.debugpy",
                 "ms-python.black-formatter",
                 "tamasfe.even-better-toml"
-            ],
+            ]
         }
     },
-    "postCreateCommand": "pipx install --user .[dev]",
+    "postCreateCommand": "pip3 install ."
 }

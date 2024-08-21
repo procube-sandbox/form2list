@@ -1,0 +1,6 @@
+et-xmlfile==1.1.0
+form2list @ file:///workspaces/form2list
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+openpyxl==3.1.5
+PyYAML==6.0.2
