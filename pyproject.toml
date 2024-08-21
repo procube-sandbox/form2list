@@ -1,0 +1,28 @@
+[project]
+name = "form2list"
+version = "0.1.0"
+description = "A script to process Excel files and generate lists."
+authors = [
+    {"name"="Mitsuru Nakakawaji"},
+    {"email"="mitsuru@procube.jp"}
+]
+license = {file="LICENSE"}
+readme = "README.md"
+
+dependencies = [
+    "openpyxl",
+    "pyyaml",
+    "jinja2"
+]
+
+[project.scripts]
+form2list = "form2list:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]

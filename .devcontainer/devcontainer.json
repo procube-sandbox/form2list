@@ -1,0 +1,22 @@
+{
+    "name": "Python 3",
+    "image": "mcr.microsoft.com/vscode/devcontainers/python:3.12",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "python.terminal.activateEnvInCurrentTerminal": true,
+                "python.defaultInterpreterPath": ".venv/bin/python"
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.pylint",
+                "ms-python.debugpy",
+                "ms-python.black-formatter",
+                "tamasfe.even-better-toml"
+            ],
+        }
+    },
+    "postCreateCommand": "pipx install --user .[dev]",
+}
