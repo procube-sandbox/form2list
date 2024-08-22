@@ -54,7 +54,7 @@ inputFormats:
 sheets:
   - name: "申込書"
     columnOffset: 0
-    rawOffset: 5
+    rowOffset: 5
     columns:
       - name: ディレクトリ名
         value: "{{ dirname.split('/')[-1] }}"
@@ -66,7 +66,7 @@ sheets:
         value: "{{ 組織名 | replace(' ', '') }}"
         conditionalFormat:
           rule:
-            notEqual: "{{ RAW }}{{ COLUMN - 1 }}"
+            notEqual: "{{ ROW }}{{ COLUMN - 1 }}"
           format:
             color: 638EC6
       - name: アカウント種別
@@ -79,25 +79,25 @@ sheets:
         value: "{{ アカウント管理者または部署のメールアドレス }}"
         conditionalFormat:
           rule:
-            notEqual: "{{ RAW }}{{ COLUMN - 1 }}"
+            notEqual: "{{ ROW }}{{ COLUMN - 1 }}"
           format:
             color: 638EC6
       - name: システム名
         value: "{{ システム名 }}"      
   - name: "アカウントCSV"
     columnOffset: 0
-    rawOffset: 5
+    rowOffset: 5
     columns:
       - name: アクション
         value: Create
       - name: ID
-        value: "=IF(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ raw }}='一般アカウント','z','s')&XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ raw }},ディレクトリ名!A:A,ディレクトリ名!B:B,'不明',0)&IF(XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ raw }},ディレクトリ名!A:A,ディレクトリ名!B:B)='l',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ raw }},所属コード!F:F,組織名!A:A),IF(XLOOKUP(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ raw }},ディレクトリ名!A:A,ディレクトリ名!B:B)='c',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ raw }},事業部!B:B,事業部!C:C),XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ raw }},会社コード!I:I,会社コード!H:H,'不明',0)))"
+        value: "=IF(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ row }}='一般アカウント','z','s')&XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B,'不明',0)&IF(XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B)='l',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},所属コード!F:F,組織名!A:A),IF(XLOOKUP(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B)='c',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},事業部!B:B,事業部!C:C),XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},会社コード!I:I,会社コード!H:H,'不明',0)))"
       - name: 表示名
-        value: "=申込書!{{ 申込書.columnOf.補正後組織名 }}{{ raw }}"
+        value: "=申込書!{{ 申込書.columnOf.補正後組織名 }}{{ row }}"
       - name: アカウント種別
-        value: "=申込書!{{ 申込書.columnOf.アカウント種別 }}{{ raw }}"
+        value: "=申込書!{{ 申込書.columnOf.アカウント種別 }}{{ row }}"
       - name: 等級
-        value: "=XLOOKUP(申込書!{{ 申込書.columnOf.ディレクトリ名 }}{{ raw }},ディレクトリ名!A:A,ディレクトリ名!C:C,'不明',0)"
+        value: "=XLOOKUP(申込書!{{ 申込書.columnOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!C:C,'不明',0)"
 ```
 
 上記のように変換仕様定義YAMLのトップレベルは、入力ファイル解析仕様を表す inputFormats と出力ファイル内にどのようにデータを書き込むかを表す sheets からなります。
@@ -133,7 +133,7 @@ sheets は出力定義のリストであり、一つの出力定義で出力フ�
 |name|出力列の名前。シートのコンテキスト情報をこの名前の Jinja 変数に格納する。|必須|
 |columns|出力列定義のリスト。リスト順に１行に書き込まれる。|必須|
 |columnOffset |列のオフセット。 columns の最初の項目を何列目に配置するかを示し、0はA列に配置することを示す| 0 |
-|rawOffset |行のオフセット。 最初の申込書を何行目に配置するかを示し、0は1行目に配置することを示す| 0 |
+|rowOffset |行のオフセット。 最初の申込書を何行目に配置するかを示し、0は1行目に配置することを示す| 0 |
 
 #### 出力列定義
 出力列定義の項目は以下のとおりです。
@@ -150,5 +150,5 @@ sheets は出力定義のリストであり、一つの出力定義で出力フ�
 
 |項目名|意味|
 | -- | -- |
-|rawNUmber|当該シートの中の現在の申込書の行番号|
+|rowNumber|当該シートの中の現在の申込書の行番号|
 |columnNameOf |出力項目名から書き込み列名へのマップオブジェクト|

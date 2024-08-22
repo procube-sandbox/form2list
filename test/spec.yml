@@ -1,0 +1,28 @@
+inputFormats:
+  - items:
+      会社名: B4
+      氏名: B6
+      メールアドレス: B8
+      プラン: B10
+      定額オプション: B12
+sheets:
+  - name: "申込書"
+    columnOffset: 0
+    rowOffset: 1
+    columns:
+      - name: ディレクトリ名
+        value: "{{ dirname.split('/')[-1] }}"
+      - name: ファイル名
+        value: "{{ basename }}"
+      - name: 会社名
+        value: "{{ 会社名 }}"
+      - name: 氏名
+        value: "{{ 氏名 }}"
+      - name: メールアドレス
+        value: "{{ メールアドレス }}"
+      - name: 補正後メールアドレス
+        value: "{{ メールアドレス }}"
+      - name: プラン
+        value: "{{ プラン }}"
+      - name: 定額オプション
+        value: "{{ 定額オプション }}"      
