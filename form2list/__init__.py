@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+form2list モジュールは、指定されたディレクトリ内の Excel ファイルを処理し、指定された出力ファイルに一覧を生成する CLI を提供します。
+"""
 
 import argparse
 import os
@@ -8,6 +11,7 @@ import yaml
 from jinja2 import Template
 
 def parse_arguments():
+    """コマンドライン引数をパースして返す"""
     parser = argparse.ArgumentParser(description='ディレクトリを巡回して入力ファイルを探します。')
     parser.add_argument('-c', '--config', type=str, default='spec.yml', help='変換仕様定義YAMLファイル名')
     parser.add_argument('-o', '--output', type=str, default='list.xlsx', help='出力ファイル')
@@ -16,6 +20,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def find_input_files(directory):
+    """指定されたディレクトリ内の Excel ファイルを再帰的に探してリストで返す"""
     input_files = []
     for root, _, files in os.walk(directory):
         for file in files:
@@ -100,22 +105,25 @@ def main():
     try:
         setup_templates(config)
     except KeyError as e:
-        print(f'Error: テンプレートに必須要素が指定されていません: {e}', file=sys.stderr)
+        print(f'Error: 仕様書 YAML に必須要素が指定されていません: {e}', file=sys.stderr)
         return 1
 
     try:
-        output_wb = openpyxl.load_workbook(args.output)
+        template_wb = openpyxl.load_workbook(config['template'])
     except FileNotFoundError:
-        print(f'Error: 出力ファイル {args.output} が見つかりませんでした。', file=sys.stderr)
+        print(f'Error: テンプレートファイル {config['template']} が見つかりませんでした。', file=sys.stderr)
+        return 1
+    except KeyError as e:
+        print(f'Error: 仕様書 YAML にテンプレートファイルが指定されていません: {e}', file=sys.stderr)
         return 1
 
     row_number = 1
     for file_path in input_files:
-        result = process_file(file_path, config, output_wb, row_number, args.verbose)
+        result = process_file(file_path, config, template_wb, row_number, args.verbose)
         row_number += 1
         if not result:
             return 1
-    output_wb.save(args.output)
+    template_wb.save(args.output)
     return 0
 
 if __name__ == '__main__':

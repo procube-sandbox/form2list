@@ -5,6 +5,7 @@ inputFormats:
       メールアドレス: B8
       プラン: B10
       定額オプション: B12
+template: templates/list.xlsx
 sheets:
   - name: "申込書"
     columnOffset: 0
@@ -21,8 +22,22 @@ sheets:
       - name: メールアドレス
         value: "{{ メールアドレス }}"
       - name: 補正後メールアドレス
-        value: "{{ メールアドレス }}"
+        value: "{{ メールアドレス | lower | replace('＠', '@') }}"
       - name: プラン
         value: "{{ プラン }}"
       - name: 定額オプション
         value: "{{ 定額オプション }}"      
+  - name: "CSV"
+    columnOffset: 0
+    rowOffset: 1
+    columns:
+      - name: 会社名
+        value: "=申込書!C{{ row }}"
+      - name: 氏名
+        value: "=申込書!D{{ row }}"
+      - name: メールアドレス
+        value: "=申込書!F{{ row }}"
+      - name: プラン
+        value: "=申込書!G{{ row }}"
+      - name: 定額オプション
+        value: "=申込書!H{{ row }}"
