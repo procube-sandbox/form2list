@@ -1,6 +1,6 @@
 [project]
 name = "form2list"
-version = "0.1.1rc2"
+version = "0.1.1rc3"
 description = "A script to process Excel files and generate lists."
 authors = [
     {"name"="Mitsuru Nakakawaji"},
