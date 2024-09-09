@@ -45,6 +45,11 @@ def process_file(file_path, config, output_wb, row_number, verbose):
     """指定された Excel ファイルを読み込み、指定されたシートに書き出す"""
     verbose_print(verbose, f'Processing file: {file_path}')
     wb = openpyxl.load_workbook(file_path)
+    # avoid UserWarning: Unknown type for SavedVersions
+    # check the property
+    if "SavedVersions" in wb.custom_doc_props:
+        # delete the string property:
+        del wb.custom_doc_props["SavedVersions"]
     ws = wb.active
 
     context = {}
@@ -123,12 +128,6 @@ def main():
         row_number += 1
         if not result:
             return 1
-    # avoid UserWarning: Unknown type for SavedVersions
-    # check the property
-    prop = template_wb.custom_doc_props["SavedVersions"]
-    if prop:
-        # delete the string property:
-        del prop["SavedVersions"]
     template_wb.save(args.output)
     return 0
 
