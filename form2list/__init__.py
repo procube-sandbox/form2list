@@ -123,6 +123,12 @@ def main():
         row_number += 1
         if not result:
             return 1
+    # avoid UserWarning: Unknown type for SavedVersions
+    # check the property
+    prop = template_wb.custom_doc_props["SavedVersions"]
+    if prop:
+        # delete the string property:
+        del prop["SavedVersions"]
     template_wb.save(args.output)
     return 0
 
