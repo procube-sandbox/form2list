@@ -12,7 +12,8 @@
                 "ms-python.pylint",
                 "ms-python.debugpy",
                 "ms-python.black-formatter",
-                "tamasfe.even-better-toml"
+                "tamasfe.even-better-toml",
+                "reporting-cz.omegasheets-vscode"
             ]
         }
     },

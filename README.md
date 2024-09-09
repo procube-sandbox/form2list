@@ -30,74 +30,48 @@ form2list [-c 変換仕様定義YAMLファイル名]　[-o 出力ファイル] �
 ```yaml
 inputFormats:
   - items:
-      # r6フォーマット
-      申請種別ラベル: B12
-      組織名: E14
-      一般アカウントチェック: F16
-      システムアカウントチェック: M16
-      臨時アカウントチェック: T16
-      アカウント管理者または部署名: E20
-      アカウント管理者または部署のメールアドレス: E22
-      システム名: E24
-    condition: "{{ 申請種別ラベル == '申請種別' }}"
-  - items:
-      # 通常フォーマット
-      組織名ラベル: B12
-      組織名: E12
-      一般アカウントチェック: F14
-      システムアカウントチェック: L14
-      臨時アカウントチェック: T14
-      アカウント管理者または部署名: E18
-      アカウント管理者または部署のメールアドレス: E20
-      システム名: E22
-    condition: "{{ 組織名ラベル == '組織名' }}"
+      会社名: B4
+      氏名: B6
+      メールアドレス: B8
+      プラン: B10
+      定額オプション: B12
+template: templates/list.xlsx
 sheets:
   - name: "申込書"
     columnOffset: 0
-    rowOffset: 5
+    rowOffset: 1
     columns:
       - name: ディレクトリ名
         value: "{{ dirname.split('/')[-1] }}"
       - name: ファイル名
         value: "{{ basename }}"
-      - name: 組織名
-        value: "{{ 組織名 }}"
-      - name: 補正後組織名
-        value: "{{ 組織名 | replace(' ', '') }}"
-        conditionalFormat:
-          rule:
-            notEqual: "{{ ROW }}{{ COLUMN - 1 }}"
-          format:
-            color: 638EC6
-      - name: アカウント種別
-        value: "{{ '一般' if 一般アカウントチェック == '〇' else 'システム' if システムアカウントチェック == '〇' else '不明' }}"
-      - name: アカウント管理者または部署名
-        value: "{{ アカウント管理者または部署名 }}"
+      - name: 会社名
+        value: "{{ 会社名 }}"
+      - name: 氏名
+        value: "{{ 氏名 }}"
       - name: メールアドレス
-        value: "{{ アカウント管理者または部署のメールアドレス }}"
+        value: "{{ メールアドレス }}"
       - name: 補正後メールアドレス
-        value: "{{ アカウント管理者または部署のメールアドレス }}"
-        conditionalFormat:
-          rule:
-            notEqual: "{{ ROW }}{{ COLUMN - 1 }}"
-          format:
-            color: 638EC6
-      - name: システム名
-        value: "{{ システム名 }}"      
-  - name: "アカウントCSV"
+        value: "{{ メールアドレス | lower | replace('＠', '@') }}"
+      - name: プラン
+        value: "{{ プラン }}"
+      - name: 定額オプション
+        value: "{{ 定額オプション }}"      
+  - name: "CSV"
     columnOffset: 0
-    rowOffset: 5
+    rowOffset: 1
     columns:
-      - name: アクション
-        value: Create
-      - name: ID
-        value: "=IF(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ row }}='一般アカウント','z','s')&XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B,'不明',0)&IF(XLOOKUP(申込書!{{  申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B)='l',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},所属コード!F:F,組織名!A:A),IF(XLOOKUP(申込書!{{ 申込書.columnNameOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!B:B)='c',XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},事業部!B:B,事業部!C:C),XLOOKUP(申込書!{{ 申込書.columnNameOf.補正後組織名 }}{{ row }},会社コード!I:I,会社コード!H:H,'不明',0)))"
-      - name: 表示名
-        value: "=申込書!{{ 申込書.columnOf.補正後組織名 }}{{ row }}"
-      - name: アカウント種別
-        value: "=申込書!{{ 申込書.columnOf.アカウント種別 }}{{ row }}"
-      - name: 等級
-        value: "=XLOOKUP(申込書!{{ 申込書.columnOf.ディレクトリ名 }}{{ row }},ディレクトリ名!A:A,ディレクトリ名!C:C,'不明',0)"
+      - name: 会社名
+        value: "=申込書!C{{ row }}"
+      - name: 氏名
+        value: "=申込書!D{{ row }}"
+      - name: メールアドレス
+        value: "=申込書!F{{ row }}"
+      - name: プラン
+        value: "=申込書!G{{ row }}"
+      - name: 定額オプション
+        value: "=申込書!H{{ row }}"
+
 ```
 
 上記のように変換仕様定義YAMLのトップレベルは、入力ファイル解析仕様を表す inputFormats と出力ファイル内にどのようにデータを書き込むかを表す sheets からなります。
@@ -121,8 +95,11 @@ condition には Jinja2 テンプレートを指定することができ、そ�
 condition を省略した場合は、 True が指定されたものとみなされます。
 condition の Jinja2 による評価結果が False となった場合は、inputFomats の次のフォーマットに移ります。このとき、 items のマッピングは一旦廃棄され、あたらしいフォーマットの items がロードされます。
 
+### テンプレートファイル指定(template)
 
-### 出力仕様
+トップレベルの template にテンプレートファイルのパスを指定しなければなりません。form2list はテンプレートファイルを読み込み、その中に次の出力仕様に従って結果を書き込みます。
+
+### 出力仕様(sheets)
 form2list はコマンドラインで指定された読み込みフォルダの配下を再起的に巡回して、申込書のファイルを探します。ファイルの拡張子が xlsx でないものは無視されます。
 申込書のExcel ファイルを開き、前節の解析結果を参照して sheets の出力定義に従って順次出力ファイルのシートに書き込みを行います。
 sheets は出力定義のリストであり、一つの出力定義で出力ファイルの一つのシートに読み込んだ申込書に対応する行を追加します。
