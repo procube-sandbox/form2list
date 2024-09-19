@@ -13,7 +13,7 @@
                 "ms-python.debugpy",
                 "ms-python.black-formatter",
                 "tamasfe.even-better-toml",
-                "reporting-cz.omegasheets-vscode"
+                "grapecity.gc-excelviewer"
             ]
         }
     },
