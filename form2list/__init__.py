@@ -6,6 +6,7 @@ form2list モジュールは、指定されたディレクトリ内の Excel フ
 import argparse
 import os
 import sys
+from ast import literal_eval
 import openpyxl
 import yaml
 from jinja2 import Template
@@ -52,8 +53,9 @@ def process_file(file_path, config, output_wb, row_number, verbose):
     for spec in config['inputFormats']:
         for key, cell in spec['items'].items():
             context[key] = ws[cell].value
-        verbose_print(verbose, f"Check condition {spec.get('condition', 'True')} on context {context}")
-        if spec['condition_template'].render(context):
+        condition_result = spec['condition_template'].render(context)
+        verbose_print(verbose, f"Rendered check condition {spec.get('condition', 'True')} on context {context} is {condition_result}")
+        if literal_eval(condition_result):
             found = True
             break
     if not found:
